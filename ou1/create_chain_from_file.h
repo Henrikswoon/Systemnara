@@ -27,11 +27,14 @@
 
     //Wrapped by parser functions, creates a LL of command structs
     command* command_chain_from_file(int* len, FILE *f, command* previous );
+    command* reverse_list(command* c);
 
     void cleanup_command_chain_from_file(char* line, char** argv);
 
     command* allocate_command(char* name, char** argv);
     int deAllocate_command(command* c);
     int deAllocate_command_node(command* c);
+
+    void remove_trailing_newline(char *str, ssize_t nread);
 
 #endif

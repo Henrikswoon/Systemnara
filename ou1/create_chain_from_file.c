@@ -92,11 +92,12 @@ command* command_chain_from_file(int* len_commands, FILE *f, command* previous){
 
     char** argv     = NULL;
     nread = getline(&line, &len, f); //line 80
-    //Case 1: getLine causes an error, or reaches EOF 
+    //Case 1: getLine causes an error, or reaches EOF
+    remove_trailing_newline(line, nread); 
     if(nread == -1){
         if(feof(f)){
             cleanup_command_chain_from_file(line, NULL);
-            return previous;
+            return reverse_list(previous);
         } else {
             cleanup_command_chain_from_file(line, argv);
             perror("Reading from file: ");
@@ -108,6 +109,7 @@ command* command_chain_from_file(int* len_commands, FILE *f, command* previous){
     if(nread > 0){
         //Read a line and assign the first token as the command 'name'
         char* token = strtok(line, " ");
+        printf("%s\n",token);
         if (token == NULL) {
             cleanup_command_chain_from_file(line, argv);
             perror("File must be formatted such that there are no empty rows: ");
@@ -117,11 +119,11 @@ command* command_chain_from_file(int* len_commands, FILE *f, command* previous){
 
         //Following tokens should be arguments passed to the command
         int argc = 1; // First argument is always command name
-        char** tmp = realloc(argv, (argc) * sizeof(char*));
+        char** tmp = malloc(sizeof(char*));
 
         if(tmp == NULL){
             cleanup_command_chain_from_file(line, argv);
-            perror("realloc: ");
+            perror("malloc: ");
             exit(EXIT_FAILURE);
         }
 
@@ -186,4 +188,24 @@ command* parse_from_argv(int* len, char* argv[2]){
         exit(EXIT_FAILURE);
     }
     return command_chain_from_file(len, f, NULL);
+}
+
+command* reverse_list(command* c){
+    command* prev = NULL;
+    command* current = c;
+    command* next = NULL;
+
+    while(current != NULL){
+        next = current->next;
+        current->next=prev;
+        prev = current;
+        current = next;
+    }
+    return prev;
+}
+
+void remove_trailing_newline(char *str, ssize_t nread) {
+    if (nread > 0 && str[nread - 1] == '\n') {
+        str[nread - 1] = '\0';  // Replace the newline with a null terminator
+    }
 }

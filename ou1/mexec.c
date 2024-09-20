@@ -3,7 +3,7 @@
 int main(int argc, char* argv[]){
     //---Construct LL---//
     command* c; 
-    int len = -1;
+    int len = 0;
     switch(argc){
         case 1:
             c = parse_from_stdin(&len);
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
         exit(EXIT_FAILURE);
     }
 
-
+/*
     command* tmp = c;
     while(tmp != NULL) {
         if(tmp->argv[1] != NULL) {
@@ -32,12 +32,13 @@ int main(int argc, char* argv[]){
         }
         tmp = tmp->next;
     }tmp = NULL;
+*/
     
 
     //---Construct LL---//
 
     //---Execute the command chain---//
-    iterate(c);    
+    //iterate(c);    
     //---Execute the command chain---//
 
     //---de-allocation---//
